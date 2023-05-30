@@ -4,7 +4,10 @@
 #include <cstdlib>
 
 
-const int BOARD_SIZE = 8;
+const int BOARD_SIZE = 4;
+
+int ilosc_czarnych = 0;
+int ilosc_bialych = 0;
 
 enum class Pole {PUSTE, BIALE, CZARNE};
 
@@ -174,6 +177,8 @@ public:
 				}
 			}
 		}
+		ilosc_czarnych = wszystkie_pionki.ile_czarnych;
+		ilosc_bialych = wszystkie_pionki.ile_bialych;
 		return wszystkie_pionki;
 	}
 
@@ -191,7 +196,7 @@ public:
 		return 0;
 	}
 
-	Pole czyToKoniec() {
+	Pole czyToKoniec(Pole aktualny_gracz) {
 		IlePionków wszystkie_pionki = policz();
 
 		if (wszystkie_pionki.ile_bialych == 0)
@@ -202,7 +207,7 @@ public:
 		{
 			return Pole::BIALE;
 		}
-		else if ((czyMozliwyRuch(Pole::BIALE) == 0) && (czyMozliwyRuch(Pole::CZARNE) == 0))
+		else if (czyMozliwyRuch(aktualny_gracz) == 0)
 		{
 			if (wszystkie_pionki.ile_bialych > wszystkie_pionki.ile_czarnych)
 			{
@@ -248,7 +253,15 @@ public:
 		int kolumna;
 		while (true)
 		{
-			std::cout << "Podaj rzad i kolumne: ";
+			if (kolor == Pole::CZARNE)
+			{
+				std::cout << "\n\t\tRuch gracza CZARNE (X)\n";
+			}
+			else
+			{
+				std::cout << "\n\t\tRuch gracza BIALE (O)\n";
+			}
+			std::cout << "\n\t\tPodaj rzad i kolumne: ";
 			std::cin >> rzad >> kolumna;
 			rzad--;
 			kolumna--;
@@ -260,7 +273,7 @@ public:
 			else
 			{
 				plansza.wypisz_plansze();
-				std::cout << "Niepoprawny ruch, sprobuj jeszcze raz!" << std::endl;
+				std::cout << "\n\t\tNiepoprawny ruch, sprobuj jeszcze raz!" << std::endl;
 			}
 		}
 		
@@ -294,35 +307,53 @@ int main() {
 	CzlowiekGracz gracz2(Pole::CZARNE);
 	Pole zwyciezca = {};
 
+	time_t start;
+	time_t koniec;
+	double czas;
+
+	time(&start);
 	while (true)
 	{
+
+
+
 		plansza.wypisz_plansze();
 		if (plansza.czyMozliwyRuch(gracz2.getKolor()))
 		{
-			std::cout << "Ruch gracza CZARNE:\n";
 			gracz2.zrob_ruch(plansza);
 		}
 		else if (!plansza.czyMozliwyRuch(gracz1.getKolor()))
 		{
-			zwyciezca = plansza.czyToKoniec();
+			zwyciezca = plansza.czyToKoniec(gracz2.getKolor());
 			break;
 		}
 
 		plansza.wypisz_plansze();
 		if (plansza.czyMozliwyRuch(gracz1.getKolor()))
 		{
-			std::cout << "Ruch gracza BIALE:\n";
 			gracz1.zrob_ruch(plansza);
 		}
 		else if (!plansza.czyMozliwyRuch(gracz2.getKolor()))
 		{
-			zwyciezca = plansza.czyToKoniec();
+			zwyciezca = plansza.czyToKoniec(gracz1.getKolor());
 			break;
 		}
 	}
 
 	plansza.wypisz_plansze();
-	std::cout << "Gra dobiegla konca!!! ";
+	time(&koniec);
+	czas = difftime(koniec, start);
+	std::cout << "\nGra dobiegla konca!!!" << std::endl;
+	if (czas < 60)
+	{
+		std::cout << "Czas gry: " << czas  << "s" << std::endl;
+	}
+	else
+	{
+		std::cout << "Czas gry: " << std::fixed << std::setprecision(0) << czas / 60 << "min " << (int)czas % 60 << "s" << std::endl;
+	}
+	std::cout << "Ilosc pionkow CZARNE: " << ilosc_czarnych << std::endl;
+	std::cout << "Ilosc pionkow BIALE: " << ilosc_bialych << std::endl;
 	if (zwyciezca == Pole::BIALE)
 	{
 		std::cout << "Zwyciezca: BIALE !!!";
