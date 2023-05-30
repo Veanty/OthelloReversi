@@ -1,8 +1,10 @@
 ﻿#include <iostream>
 #include <iomanip>
+#include <string>
+#include <cstdlib>
 
 
-const int BOARD_SIZE = 10;
+const int BOARD_SIZE = 8;
 
 enum class Pole {PUSTE, BIALE, CZARNE};
 
@@ -32,30 +34,35 @@ public:
 		pola_planszy[numer][numer-1] = Pole::CZARNE;
 		pola_planszy[numer][numer] = Pole::BIALE;
 	}
-	void wypisz_plansze(){
-		std::cout << "   ";
+	void wypisz_plansze() {
+		int max_index_length = std::to_string(BOARD_SIZE).length();
+		system("cls");
+		std::cout << std::string(max_index_length + 2, ' ');
 		for (int i = 0; i < BOARD_SIZE; i++)
 		{
-			std::cout << i + 1 << " ";
+			std::cout << std::setw(max_index_length) << i + 1 << std::string(2, ' ');
 		}
 		std::cout << std::endl;
+
 		for (int i = 0; i < BOARD_SIZE; i++)
 		{
-			std::cout << std::setw(2) << i + 1 << " ";
+			if (i > 0)
+			{
+				std::cout << std::endl;
+			}
+			std::cout << std::setw(max_index_length) << i + 1 << "  ";
 			for (int j = 0; j < BOARD_SIZE; j++)
 			{
-				if (pola_planszy[i][j] == Pole::PUSTE)
+				char symbol = '.';
+				if (pola_planszy[i][j] == Pole::CZARNE)
 				{
-					std::cout << ". ";
-				}
-				else if (pola_planszy[i][j] == Pole::CZARNE)
-				{
-					std::cout << "X ";
+					symbol = 'X';
 				}
 				else if (pola_planszy[i][j] == Pole::BIALE)
 				{
-					std::cout << "O ";
+					symbol = 'O';
 				}
+				std::cout << std::setw(max_index_length) << symbol << std::string(2, ' ');
 			}
 			std::cout << std::endl;
 		}
