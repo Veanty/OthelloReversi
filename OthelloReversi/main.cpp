@@ -1,7 +1,8 @@
 ﻿#include <iostream>
+#include <iomanip>
 
 
-const int BOARD_SIZE = 8;
+const int BOARD_SIZE = 10;
 
 enum class Pole {PUSTE, BIALE, CZARNE};
 
@@ -24,10 +25,12 @@ public:
 				pola_planszy[i][j] = Pole::PUSTE;
 			}
 		}
-		pola_planszy[3][3] = Pole::BIALE;
-		pola_planszy[3][4] = Pole::CZARNE;
-		pola_planszy[4][3] = Pole::CZARNE;
-		pola_planszy[4][4] = Pole::BIALE;
+		int numer = BOARD_SIZE / 2;
+		
+		pola_planszy[numer-1][numer-1] = Pole::BIALE;
+		pola_planszy[numer-1][numer] = Pole::CZARNE;
+		pola_planszy[numer][numer-1] = Pole::CZARNE;
+		pola_planszy[numer][numer] = Pole::BIALE;
 	}
 	void wypisz_plansze(){
 		std::cout << "   ";
@@ -38,7 +41,7 @@ public:
 		std::cout << std::endl;
 		for (int i = 0; i < BOARD_SIZE; i++)
 		{
-			std::cout << " " << i + 1 << " ";
+			std::cout << std::setw(2) << i + 1 << " ";
 			for (int j = 0; j < BOARD_SIZE; j++)
 			{
 				if (pola_planszy[i][j] == Pole::PUSTE)
