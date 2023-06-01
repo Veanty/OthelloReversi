@@ -157,17 +157,17 @@
 	 time(&start);
 	 while (true)
 	 {
-
-
-
 		 plansza->wypisz_plansze();
 		 if (plansza->czyMozliwyRuch(gracz2->getKolor()))
 		 {
 			 gracz2->zrob_ruch(*plansza);
 		 }
-		 else if (!plansza->czyMozliwyRuch(gracz1->getKolor()))
+		 else
 		 {
-			 zwyciezca = plansza->czyToKoniec(gracz1->getKolor());
+			 if (!plansza->czyMozliwyRuch(gracz1->getKolor()))
+			 {
+				 zwyciezca = plansza->czyToKoniec(gracz1->getKolor());
+			 }
 			 break;
 		 }
 
@@ -176,9 +176,12 @@
 		 {
 			 gracz1->zrob_ruch(*plansza);
 		 }
-		 else if (!plansza->czyMozliwyRuch(gracz2->getKolor()))
+		 else
 		 {
-			 zwyciezca = plansza->czyToKoniec(gracz2->getKolor());
+			 if (!plansza->czyMozliwyRuch(gracz2->getKolor()))
+			 {
+				 zwyciezca = plansza->czyToKoniec(gracz2->getKolor());
+			 }
 			 break;
 		 }
 	 }
