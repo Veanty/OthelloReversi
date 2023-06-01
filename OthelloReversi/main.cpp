@@ -1,10 +1,4 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
-
-#include <iostream>
-#include <string>
-#include <conio.h>
-
-#include "Plansza.h"
+﻿#include "Plansza.h"
 #include "Gracz.h"
 #include "CzlowiekGracz.h"
 #include "AIGracz.h"
