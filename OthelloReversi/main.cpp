@@ -361,11 +361,11 @@ void dodaj_mecz(int liczba_czarnych, int liczba_bialych, double czas, int rozmia
 	if (plik.is_open())
 	{
 		plik << "|" << (czas_lokalny->tm_year + 1900) << "-"
-			<< (czas_lokalny->tm_mon + 1) << "-"
-			<< czas_lokalny->tm_mday << " "
-			<< czas_lokalny->tm_hour << ":"
-			<< czas_lokalny->tm_min << ":"
-			<< czas_lokalny->tm_sec << "| ";
+			<< std::setw(2) << std::setfill('0') << (czas_lokalny->tm_mon + 1) << "-"
+			<< std::setw(2) << std::setfill('0') << czas_lokalny->tm_mday << " "
+			<< std::setw(2) << std::setfill('0') << czas_lokalny->tm_hour << ":"
+			<< std::setw(2) << std::setfill('0') << czas_lokalny->tm_min << ":"
+			<< std::setw(2) << std::setfill('0') << czas_lokalny->tm_sec << "| ";
 		plik << "|Liczba czarnych: " << liczba_czarnych << ", liczba bialych: " << liczba_bialych << "| |Dlugosc gry: " << czas << "s| |Tryb: " << kto_gra << "| |Rozmiar planszy: " << rozmiar_planszy << "x" << rozmiar_planszy << "|" << std::endl;
 		std::cout << "Mecz zostal wpisany do historii gier" << std::endl;
 		plik.close();
@@ -467,18 +467,18 @@ void rozpocznij_gre() {
 	std::cout << "2. Niestandardowa" << std::endl;
 
 
-
-	std::cin >> opcja;
+	int opcja2;
+	std::cin >> opcja2;
 	wyczysc_bufor();
 
 	while (true)
 	{
-		if (opcja == '1')
+		if (opcja2 == 1)
 		{
 			plansza = new Plansza(8);
 			break;
 		}
-		else if (opcja == '2')
+		else if (opcja2 == 2)
 		{
 			int rozmiar = 1;
 			std::cout << "Tworzenie niestandardowej planszy..." << std::endl;
@@ -495,7 +495,7 @@ void rozpocznij_gre() {
 		else
 		{
 			std::cout << "Podana opcja nie istnieje, sprobuj jeszcze raz." << std::endl;
-			std::cin >> opcja;
+			std::cin >> opcja2;
 			wyczysc_bufor();
 			continue;
 		}
@@ -603,6 +603,16 @@ int main() {
 
 	std::srand(std::time(0));
 
+	std::cout << R"(
+   ____  _   _          _ _          _______                         _ 
+  / __ \| | | |        | | |        / /  __ \                       (_)
+ | |  | | |_| |__   ___| | | ___   / /| |__) |_____   _____ _ __ ___ _ 
+ | |  | | __| '_ \ / _ \ | |/ _ \ / / |  _  // _ \ \ / / _ \ '__/ __| |
+ | |__| | |_| | | |  __/ | | (_) / /  | | \ \  __/\ V /  __/ |  \__ \ |
+  \____/ \__|_| |_|\___|_|_|\___/_/   |_|  \_\___| \_/ \___|_|  |___/_|
+                                                                       
+                                                                       
+)" << std::endl;
 	std::cout << "Witaj w grze Othello/Reversi by Jakub Drozd" << std::endl;
 	intro();
 
