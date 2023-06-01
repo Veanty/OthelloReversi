@@ -1,6 +1,11 @@
-﻿#include <iostream>
+﻿#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
 #include <iomanip>
 #include <string>
+#include <cstdlib>
+#include <fstream>
+#include <conio.h>
 #include <cstdlib>
 
 
@@ -37,9 +42,10 @@ public:
 		pola_planszy[numer][numer-1] = Pole::CZARNE;
 		pola_planszy[numer][numer] = Pole::BIALE;
 	}
+
 	void wypisz_plansze() {
 		int max_index_length = std::to_string(BOARD_SIZE).length();
-		system("cls");
+		/*system("cls");*/
 		std::cout << std::string(max_index_length + 2, ' ');
 		for (int i = 0; i < BOARD_SIZE; i++)
 		{
@@ -69,6 +75,7 @@ public:
 			}
 			std::cout << std::endl;
 		}
+		std::cout << std::endl;
 	}
 
 	int sprawdzanie_ruchu(int rzad, int kolumna, Pole aktualny_gracz) const {
@@ -207,7 +214,7 @@ public:
 		{
 			return Pole::BIALE;
 		}
-		else if (czyMozliwyRuch(aktualny_gracz) == 0)
+		else if (czyMozliwyRuch(Pole::BIALE)==0 || czyMozliwyRuch(Pole::CZARNE) == 0)
 		{
 			if (wszystkie_pionki.ile_bialych > wszystkie_pionki.ile_czarnych)
 			{
@@ -281,35 +288,139 @@ public:
 	}
 };
 
+class Ruch {
+public:
+	int rzad;
+	int kolumna;
+};
+
 
 class AIGracz : public Gracz {
 public:
 	AIGracz(Pole kolor) : Gracz(kolor) {};
 	void zrob_ruch(Plansza& plansza) override {
+
+		Ruch zapamietane_ruchy[20];
+		int k = 0;
+
 		for (int rzad = 0; rzad < BOARD_SIZE; rzad++)
 		{
 			for (int kolumna = 0; kolumna < BOARD_SIZE; kolumna++)
 			{
 				if (plansza.sprawdzanie_ruchu(rzad, kolumna, kolor) == 1)
 				{
-					plansza.ruch(rzad, kolumna, kolor);
-					return;
+					zapamietane_ruchy[k].rzad = rzad;
+					zapamietane_ruchy[k].kolumna = kolumna;
+					k++;
 				}
 			}
 		}
+
+		int random = rand() % k;
+		while (true)
+		{
+			if (plansza.sprawdzanie_ruchu(zapamietane_ruchy[random].rzad, zapamietane_ruchy[random].kolumna, kolor) == 1)
+			{
+				plansza.ruch(zapamietane_ruchy[random].rzad, zapamietane_ruchy[random].kolumna, kolor);
+				std::cout << "Komputer: " << zapamietane_ruchy[random].rzad + 1 << " " << zapamietane_ruchy[random].kolumna + 1 << std::endl;
+				break;
+			}
+			else
+			{
+				random = rand() % k;
+			}
+		}
+		
 	}
 };
 
+void dodaj_mecz(int liczba_czarnych, int liczba_bialych, double czas, int rozmiar_planszy, std::string kto_gra){
+	std::ofstream plik("historia_meczy.txt", std::ios::app);
 
-int main() {
+	time_t log_meczu;
+	time(&log_meczu);
+	struct tm* czas_lokalny = localtime(&log_meczu);
+	
+	if (plik.is_open())
+	{
+		plik << "|" << (czas_lokalny->tm_year + 1900) << "-"
+			<< (czas_lokalny->tm_mon + 1) << "-"
+			<< czas_lokalny->tm_mday << " "
+			<< czas_lokalny->tm_hour << ":"
+			<< czas_lokalny->tm_min << ":"
+			<< czas_lokalny->tm_sec << "| ";
+		plik << "|Liczba czarnych: " << liczba_czarnych << ", liczba bialych: " << liczba_bialych << "| |Dlugosc gry: " << czas << "s| |Tryb: " << kto_gra << "| |Rozmiar planszy: " << rozmiar_planszy << "x" << rozmiar_planszy << "|" << std::endl;
+		std::cout << "Mecz zostal wpisany do historii gier" << std::endl;
+		plik.close();
+	}
+	else
+	{
+		std::cout << "Pliku nie udalo sie otworzyc";
+	}
+}
+
+void odczytaj_mecze() {
+	std::ifstream plik("historia_meczy.txt");
+	std::string linia;
+	if (plik.is_open())
+	{
+		while (std::getline(plik, linia))
+		{
+			std::cout << linia << '\n';
+		}
+		plik.close();
+	}
+	else
+	{
+		std::cout << "Nie udalo sie otworzyc pliku z historia meczy";
+	}
+}
+
+void rozpocznij_gre() {
 	Plansza plansza;
-	CzlowiekGracz gracz1(Pole::BIALE);
-	CzlowiekGracz gracz2(Pole::CZARNE);
+	Gracz* gracz1;
+	Gracz* gracz2;
 	Pole zwyciezca = {};
 
 	time_t start;
 	time_t koniec;
 	double czas;
+
+	std::string kto_gra;
+
+	std::cout << "Wybierz tryb gry:" << std::endl;
+	std::cout << "[G] - GRACZ VS GRACZ\t [K] - GRACZ VS KOMPUTER" << std::endl;
+	char opcja;
+
+	std::cin >> opcja;
+
+	while (true)
+	{
+		if (opcja == 'g' || opcja == 'G')
+		{
+			std::cout << "Wybrano tryb GRACZ VS GRACZ" << std::endl;
+			kto_gra = "PVP";
+			gracz1 = new CzlowiekGracz(Pole::BIALE);
+			gracz2 = new CzlowiekGracz(Pole::CZARNE);
+			break;
+
+		}
+		else if (opcja == 'k' || opcja == 'K')
+		{
+			std::cout << "Wybrano tryp GRACZ VS KOMPUTER" << std::endl;
+			kto_gra = "PvE";
+			gracz1 = new CzlowiekGracz(Pole::BIALE);
+			gracz2 = new AIGracz(Pole::CZARNE);
+			break;
+		}
+		else
+		{
+			std::cout << "Nieznany tryb, sprobuj jeszcze raz." << std::endl;
+			std::cin >> opcja;
+			continue;
+		}
+	}
+	
 
 	time(&start);
 	while (true)
@@ -318,24 +429,24 @@ int main() {
 
 
 		plansza.wypisz_plansze();
-		if (plansza.czyMozliwyRuch(gracz2.getKolor()))
+		if (plansza.czyMozliwyRuch(gracz2->getKolor()))
 		{
-			gracz2.zrob_ruch(plansza);
+			gracz2->zrob_ruch(plansza);
 		}
-		else if (!plansza.czyMozliwyRuch(gracz1.getKolor()))
+		else if (!plansza.czyMozliwyRuch(gracz1->getKolor()))
 		{
-			zwyciezca = plansza.czyToKoniec(gracz2.getKolor());
+			zwyciezca = plansza.czyToKoniec(gracz1->getKolor());
 			break;
 		}
 
 		plansza.wypisz_plansze();
-		if (plansza.czyMozliwyRuch(gracz1.getKolor()))
+		if (plansza.czyMozliwyRuch(gracz1->getKolor()))
 		{
-			gracz1.zrob_ruch(plansza);
+			gracz1->zrob_ruch(plansza);
 		}
-		else if (!plansza.czyMozliwyRuch(gracz2.getKolor()))
+		else if (!plansza.czyMozliwyRuch(gracz2->getKolor()))
 		{
-			zwyciezca = plansza.czyToKoniec(gracz1.getKolor());
+			zwyciezca = plansza.czyToKoniec(gracz2->getKolor());
 			break;
 		}
 	}
@@ -346,7 +457,7 @@ int main() {
 	std::cout << "\nGra dobiegla konca!!!" << std::endl;
 	if (czas < 60)
 	{
-		std::cout << "Czas gry: " << czas  << "s" << std::endl;
+		std::cout << "Czas gry: " << czas << "s" << std::endl;
 	}
 	else
 	{
@@ -367,6 +478,51 @@ int main() {
 		std::cout << "!#! Remis !#!";
 	}
 	std::cout << std::endl;
+
+	delete gracz1;
+	delete gracz2;
+
+	dodaj_mecz(ilosc_czarnych, ilosc_bialych, czas, BOARD_SIZE, kto_gra);
+}
+
+void intro() {
+
+	std::cout << "1. Nowa gra" << std::endl;
+	std::cout << "2. Historia meczy" << std::endl;
+	std::cout << "3. Wyjdz" << std::endl;
+	char opcja;
+	std::cin >> opcja;
+	if (opcja == '1')
+	{
+		rozpocznij_gre();
+		std::cout << "Nacisnij dowolny klawsiz, aby powrocic do menu glownego." << std::endl;
+		_getch();
+		system("cls");
+		intro();
+	}
+	else if (opcja == '2')
+	{
+		odczytaj_mecze();
+		intro();
+	}
+	else if(opcja == '3')
+	{
+		return;
+	}
+	else
+	{
+		std::cout << "Nieznana opcja, sproboj ponownie." << std::endl;
+		intro();
+	}
+}
+
+
+int main() {
+
+	std::srand(std::time(0));
+
+	std::cout << "Witaj w grze Othello/Reversi by Jakub Drozd" << std::endl;
+	intro();
 
 	return 0;
 }
