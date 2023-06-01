@@ -377,19 +377,36 @@ void dodaj_mecz(int liczba_czarnych, int liczba_bialych, double czas, int rozmia
 }
 
 void odczytaj_mecze() {
-	std::ifstream plik("historia_meczy.txt");
-	std::string linia;
-	if (plik.is_open())
+	FILE* plik = fopen("historia_meczy.txt", "r");
+	if (plik != NULL)
 	{
-		while (std::getline(plik, linia))
+		char data[20];
+		int czarne, biale, dlugosc_gry;
+		char tryb[4];
+		int rozmiar_x, rozmiar_y;
+
+		while (!feof(plik))
 		{
-			std::cout << linia << '\n';
+			int liczba_skanowanych = fscanf(plik, " |%19[^|]| |Liczba czarnych: %d, liczba bialych: %d| |Dlugosc gry: %ds| |Tryb: %3[^|]| |Rozmiar planszy: %dx%d| ",
+				data, &czarne, &biale, &dlugosc_gry, tryb, &rozmiar_x, &rozmiar_y);
+
+			if (liczba_skanowanych == 7)
+			{
+				printf("|%s| |Liczba czarnych: %d, liczba bialych: %d| |Dlugosc gry: %ds| |Tryb: %s| |Rozmiar planszy: %dx%d|\n",
+					data, czarne, biale, dlugosc_gry, tryb, rozmiar_x, rozmiar_y);
+			}
+			else
+			{
+				printf("Niepoprawny format linii\n");
+				char ignoruj[300];
+				fgets(ignoruj, sizeof(ignoruj), plik);
+			}
 		}
-		plik.close();
+		fclose(plik);
 	}
 	else
 	{
-		std::cout << "Nie udalo sie otworzyc pliku z historia meczy";
+		printf("Nie udalo sie otworzyc pliku z historia meczy\n");
 	}
 }
 
