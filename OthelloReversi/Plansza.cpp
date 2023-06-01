@@ -204,7 +204,7 @@ Pole Plansza::czyToKoniec(Pole aktualny_gracz) {
 	{
 		return Pole::BIALE;
 	}
-	else if (czyMozliwyRuch(Pole::BIALE) == 0 || czyMozliwyRuch(Pole::CZARNE) == 0)
+	else if (czyMozliwyRuch(Pole::BIALE) == 0 && czyMozliwyRuch(Pole::CZARNE) == 0)
 	{
 		if (wszystkie_pionki.ile_bialych > wszystkie_pionki.ile_czarnych)
 		{
