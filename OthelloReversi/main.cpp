@@ -397,7 +397,7 @@ void odczytaj_mecze() {
 			}
 			else
 			{
-				printf("Niepoprawny format linii\n");
+				printf("[Niepoprawny format log'a]\n");
 				char ignoruj[300];
 				fgets(ignoruj, sizeof(ignoruj), plik);
 			}
@@ -408,6 +408,11 @@ void odczytaj_mecze() {
 	{
 		printf("Nie udalo sie otworzyc pliku z historia meczy\n");
 	}
+}
+
+void wyczysc_bufor() {
+	int c;
+	while ((c = getchar()) != '\n' && c != EOF) {}
 }
 
 void rozpocznij_gre() {
@@ -427,6 +432,7 @@ void rozpocznij_gre() {
 	char opcja;
 
 	std::cin >> opcja;
+	wyczysc_bufor();
 
 	while (true)
 	{
@@ -451,6 +457,7 @@ void rozpocznij_gre() {
 		{
 			std::cout << "Nieznany tryb, sprobuj jeszcze raz." << std::endl;
 			std::cin >> opcja;
+			wyczysc_bufor();
 			continue;
 		}
 	}
@@ -459,7 +466,10 @@ void rozpocznij_gre() {
 	std::cout << "1. Domyslna: 8x8" << std::endl;
 	std::cout << "2. Niestandardowa" << std::endl;
 
+
+
 	std::cin >> opcja;
+	wyczysc_bufor();
 
 	while (true)
 	{
@@ -486,6 +496,7 @@ void rozpocznij_gre() {
 		{
 			std::cout << "Podana opcja nie istnieje, sprobuj jeszcze raz." << std::endl;
 			std::cin >> opcja;
+			wyczysc_bufor();
 			continue;
 		}
 	}
@@ -561,6 +572,8 @@ void intro() {
 	std::cout << "3. Wyjdz" << std::endl;
 	char opcja;
 	std::cin >> opcja;
+	wyczysc_bufor();
+
 	if (opcja == '1')
 	{
 		rozpocznij_gre();
