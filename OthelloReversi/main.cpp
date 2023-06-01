@@ -9,7 +9,6 @@
 #include <cstdlib>
 
 
-const int BOARD_SIZE = 4;
 
 int ilosc_czarnych = 0;
 int ilosc_bialych = 0;
@@ -25,17 +24,27 @@ class Plansza {
 	};
 
 private:
-	Pole pola_planszy[BOARD_SIZE][BOARD_SIZE];
+	Pole **pola_planszy;
 public:
-	Plansza() {
-		for (int i = 0; i < BOARD_SIZE; i++)
+	int rozmiar_planszy;
+
+	Plansza(int rozmiar_planszy) {
+		this->rozmiar_planszy = rozmiar_planszy;
+
+		pola_planszy = new Pole * [rozmiar_planszy];
+		for (int i = 0; i < rozmiar_planszy; i++)
 		{
-			for (int j = 0; j < BOARD_SIZE; j++)
+			pola_planszy[i] = new Pole[rozmiar_planszy];
+		}
+
+		for (int i = 0; i < rozmiar_planszy; i++)
+		{
+			for (int j = 0; j < rozmiar_planszy; j++)
 			{
 				pola_planszy[i][j] = Pole::PUSTE;
 			}
 		}
-		int numer = BOARD_SIZE / 2;
+		int numer = rozmiar_planszy / 2;
 		
 		pola_planszy[numer-1][numer-1] = Pole::BIALE;
 		pola_planszy[numer-1][numer] = Pole::CZARNE;
@@ -43,24 +52,32 @@ public:
 		pola_planszy[numer][numer] = Pole::BIALE;
 	}
 
+	~Plansza() {
+		for (int i = 0; i < rozmiar_planszy; i++)
+		{
+			delete[] pola_planszy[i];
+		}
+		delete[] pola_planszy;
+	}
+
 	void wypisz_plansze() {
-		int max_index_length = std::to_string(BOARD_SIZE).length();
+		int max_index_length = std::to_string(rozmiar_planszy).length();
 		/*system("cls");*/
 		std::cout << std::string(max_index_length + 2, ' ');
-		for (int i = 0; i < BOARD_SIZE; i++)
+		for (int i = 0; i < rozmiar_planszy; i++)
 		{
 			std::cout << std::setw(max_index_length) << i + 1 << std::string(2, ' ');
 		}
 		std::cout << std::endl;
 
-		for (int i = 0; i < BOARD_SIZE; i++)
+		for (int i = 0; i < rozmiar_planszy; i++)
 		{
 			if (i > 0)
 			{
 				std::cout << std::endl;
 			}
 			std::cout << std::setw(max_index_length) << i + 1 << "  ";
-			for (int j = 0; j < BOARD_SIZE; j++)
+			for (int j = 0; j < rozmiar_planszy; j++)
 			{
 				char symbol = '.';
 				if (pola_planszy[i][j] == Pole::CZARNE)
@@ -94,7 +111,7 @@ public:
 			przeciwnik = Pole::BIALE;
 		}
 
-		if (rzad < 0 || rzad >= BOARD_SIZE || kolumna < 0 || kolumna >= BOARD_SIZE || pola_planszy[rzad][kolumna] != Pole::PUSTE)
+		if (rzad < 0 || rzad >= rozmiar_planszy || kolumna < 0 || kolumna >= rozmiar_planszy || pola_planszy[rzad][kolumna] != Pole::PUSTE)
 		{
 			return 0;				//Sprawdzanie czy ruch nie jest wykonany poza planszą
 		}
@@ -106,14 +123,14 @@ public:
 			int test_kolumna = kolumna + deltaKolumna[i];
 
 
-			while (test_rzad >= 0 && test_rzad < BOARD_SIZE && test_kolumna >= 0 && test_kolumna < BOARD_SIZE && pola_planszy[test_rzad][test_kolumna] == przeciwnik)
+			while (test_rzad >= 0 && test_rzad < rozmiar_planszy && test_kolumna >= 0 && test_kolumna < rozmiar_planszy && pola_planszy[test_rzad][test_kolumna] == przeciwnik)
 			{
 				test_rzad += deltaRzad[i];
 				test_kolumna += deltaKolumna[i];	//Jeżeli ruch, ktory ma byc wykonany nie wychodzi poza granice planszy i nie jest to pole zajete										przez aktualnego gracza to jest to poprawny ruch
 				poprawny = 1;
 			}
 
-			if (test_rzad >= 0 && test_rzad < BOARD_SIZE && test_kolumna >= 0 && test_kolumna < BOARD_SIZE && pola_planszy[test_rzad][test_kolumna] == aktualny_gracz && poprawny)
+			if (test_rzad >= 0 && test_rzad < rozmiar_planszy && test_kolumna >= 0 && test_kolumna < rozmiar_planszy && pola_planszy[test_rzad][test_kolumna] == aktualny_gracz && poprawny)
 			{
 				return 1;
 			}
@@ -146,13 +163,13 @@ public:
 				int test_rzad = rzad + deltaRzad[i];
 				int test_kolumna = kolumna + deltaKolumna[i];
 
-				while (test_rzad >= 0 && test_rzad < BOARD_SIZE && test_kolumna >= 0 && test_kolumna < BOARD_SIZE && pola_planszy[test_rzad][test_kolumna] == przeciwnik)
+				while (test_rzad >= 0 && test_rzad < rozmiar_planszy && test_kolumna >= 0 && test_kolumna < rozmiar_planszy && pola_planszy[test_rzad][test_kolumna] == przeciwnik)
 				{
 					test_rzad += deltaRzad[i];
 					test_kolumna += deltaKolumna[i];
 				}
 
-				if (test_rzad >= 0 && test_rzad < BOARD_SIZE && test_kolumna >= 0 && test_kolumna < BOARD_SIZE && pola_planszy[test_rzad][test_kolumna] == aktualny_gracz)
+				if (test_rzad >= 0 && test_rzad < rozmiar_planszy && test_kolumna >= 0 && test_kolumna < rozmiar_planszy && pola_planszy[test_rzad][test_kolumna] == aktualny_gracz)
 				{
 					test_rzad -= deltaRzad[i];
 					test_kolumna -= deltaKolumna[i];
@@ -170,9 +187,9 @@ public:
 
 	IlePionków policz() {
 		IlePionków wszystkie_pionki = { 0, 0 };
-		for (int i = 0; i < BOARD_SIZE; i++)
+		for (int i = 0; i < rozmiar_planszy; i++)
 		{
-			for (int j = 0; j < BOARD_SIZE; j++)
+			for (int j = 0; j < rozmiar_planszy; j++)
 			{
 				if (pola_planszy[i][j] == Pole::BIALE)
 				{
@@ -190,9 +207,9 @@ public:
 	}
 
 	int czyMozliwyRuch(Pole aktualny_gracz) {
-		for (int i = 0; i < BOARD_SIZE; i++)
+		for (int i = 0; i < rozmiar_planszy; i++)
 		{
-			for (int j = 0; j < BOARD_SIZE; j++)
+			for (int j = 0; j < rozmiar_planszy; j++)
 			{
 				if (sprawdzanie_ruchu(i, j, aktualny_gracz) == 1)
 				{
@@ -303,9 +320,9 @@ public:
 		Ruch zapamietane_ruchy[20];
 		int k = 0;
 
-		for (int rzad = 0; rzad < BOARD_SIZE; rzad++)
+		for (int rzad = 0; rzad < plansza.rozmiar_planszy; rzad++)
 		{
-			for (int kolumna = 0; kolumna < BOARD_SIZE; kolumna++)
+			for (int kolumna = 0; kolumna < plansza.rozmiar_planszy; kolumna++)
 			{
 				if (plansza.sprawdzanie_ruchu(rzad, kolumna, kolor) == 1)
 				{
@@ -377,7 +394,7 @@ void odczytaj_mecze() {
 }
 
 void rozpocznij_gre() {
-	Plansza plansza;
+	Plansza* plansza = nullptr;
 	Gracz* gracz1;
 	Gracz* gracz2;
 	Pole zwyciezca = {};
@@ -420,6 +437,41 @@ void rozpocznij_gre() {
 			continue;
 		}
 	}
+
+	std::cout << "Podaj rozmiar planszy:" << std::endl;
+	std::cout << "1. Domyslna: 8x8" << std::endl;
+	std::cout << "2. Niestandardowa" << std::endl;
+
+	std::cin >> opcja;
+
+	while (true)
+	{
+		if (opcja == '1')
+		{
+			plansza = new Plansza(8);
+			break;
+		}
+		else if (opcja == '2')
+		{
+			int rozmiar = 1;
+			std::cout << "Tworzenie niestandardowej planszy..." << std::endl;
+			std::cout << "Podaj rozmiar planszy (Liczba parzysta z przedzialu [4 - 98]): " << std::endl;
+			std::cin >> rozmiar;
+			while ((rozmiar % 2 == 1) || (rozmiar < 4 || rozmiar > 98))
+			{
+				std::cout << "Podano niepoprawny rozmiar, sprobuj jeszcze raz" << std::endl;
+				std::cin >> rozmiar;
+			}
+			plansza = new Plansza(rozmiar);
+			break;
+		}
+		else
+		{
+			std::cout << "Podana opcja nie istnieje, sprobuj jeszcze raz." << std::endl;
+			std::cin >> opcja;
+			continue;
+		}
+	}
 	
 
 	time(&start);
@@ -428,30 +480,30 @@ void rozpocznij_gre() {
 
 
 
-		plansza.wypisz_plansze();
-		if (plansza.czyMozliwyRuch(gracz2->getKolor()))
+		plansza->wypisz_plansze();
+		if (plansza->czyMozliwyRuch(gracz2->getKolor()))
 		{
-			gracz2->zrob_ruch(plansza);
+			gracz2->zrob_ruch(*plansza);
 		}
-		else if (!plansza.czyMozliwyRuch(gracz1->getKolor()))
+		else if (!plansza->czyMozliwyRuch(gracz1->getKolor()))
 		{
-			zwyciezca = plansza.czyToKoniec(gracz1->getKolor());
+			zwyciezca = plansza->czyToKoniec(gracz1->getKolor());
 			break;
 		}
 
-		plansza.wypisz_plansze();
-		if (plansza.czyMozliwyRuch(gracz1->getKolor()))
+		plansza->wypisz_plansze();
+		if (plansza->czyMozliwyRuch(gracz1->getKolor()))
 		{
-			gracz1->zrob_ruch(plansza);
+			gracz1->zrob_ruch(*plansza);
 		}
-		else if (!plansza.czyMozliwyRuch(gracz2->getKolor()))
+		else if (!plansza->czyMozliwyRuch(gracz2->getKolor()))
 		{
-			zwyciezca = plansza.czyToKoniec(gracz2->getKolor());
+			zwyciezca = plansza->czyToKoniec(gracz2->getKolor());
 			break;
 		}
 	}
 
-	plansza.wypisz_plansze();
+	plansza->wypisz_plansze();
 	time(&koniec);
 	czas = difftime(koniec, start);
 	std::cout << "\nGra dobiegla konca!!!" << std::endl;
@@ -482,7 +534,7 @@ void rozpocznij_gre() {
 	delete gracz1;
 	delete gracz2;
 
-	dodaj_mecz(ilosc_czarnych, ilosc_bialych, czas, BOARD_SIZE, kto_gra);
+	dodaj_mecz(ilosc_czarnych, ilosc_bialych, czas, plansza->rozmiar_planszy, kto_gra);
 }
 
 void intro() {
