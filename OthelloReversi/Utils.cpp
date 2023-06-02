@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include "Utils.h"
 #include <fstream>
 #include <conio.h>
@@ -92,8 +92,8 @@
 		 {
 			 std::cout << "Wybrano tryb GRACZ VS GRACZ" << std::endl;
 			 kto_gra = "PVP";
-			 gracz1 = new CzlowiekGracz(Pole::BIALE);
-			 gracz2 = new CzlowiekGracz(Pole::CZARNE);
+			 gracz1 = new CzlowiekGracz(Pole::CZARNE);
+			 gracz2 = new CzlowiekGracz(Pole::BIALE);
 			 break;
 
 		 }
@@ -101,8 +101,8 @@
 		 {
 			 std::cout << "Wybrano tryp GRACZ VS KOMPUTER" << std::endl;
 			 kto_gra = "PvE";
-			 gracz1 = new CzlowiekGracz(Pole::BIALE);
-			 gracz2 = new AIGracz(Pole::CZARNE);
+			 gracz1 = new CzlowiekGracz(Pole::CZARNE);
+			 gracz2 = new AIGracz(Pole::BIALE);
 			 break;
 		 }
 		 else
@@ -155,38 +155,38 @@
 
 
 	 time(&start);
+
+	 Gracz* aktualny_gracz = gracz1;
+	 Gracz* przeciwnik = gracz2;
 	 while (true)
 	 {
-		 plansza->wypisz_plansze();
-		 if (plansza->czyMozliwyRuch(gracz2->getKolor()))
-		 {
-			 gracz2->zrob_ruch(*plansza);
-		 }
-		 else
-		 {
-			 if (!plansza->czyMozliwyRuch(gracz1->getKolor()))
-			 {
-				 zwyciezca = plansza->czyToKoniec(gracz1->getKolor());
-			 }
-			 break;
-		 }
 
 		 plansza->wypisz_plansze();
-		 if (plansza->czyMozliwyRuch(gracz1->getKolor()))
+
+
+		 if (aktualny_gracz->getKolor() == Pole::CZARNE)
 		 {
-			 gracz1->zrob_ruch(*plansza);
+			 przeciwnik = gracz2;
 		 }
 		 else
 		 {
-			 if (!plansza->czyMozliwyRuch(gracz2->getKolor()))
-			 {
-				 zwyciezca = plansza->czyToKoniec(gracz2->getKolor());
-			 }
+			 przeciwnik = gracz1;
+		 }
+		 
+
+		 if (!plansza->czyMozliwyRuch(aktualny_gracz->getKolor()))
+		 {
+			 plansza->policz();
 			 break;
+		 }
+		 else
+		 {
+			 aktualny_gracz->zrob_ruch(*plansza);
+			 aktualny_gracz = przeciwnik;
+			 continue;
 		 }
 	 }
 
-	 plansza->wypisz_plansze();
 	 time(&koniec);
 	 czas = difftime(koniec, start);
 	 std::cout << "\nGra dobiegla konca!!!" << std::endl;
@@ -198,13 +198,13 @@
 	 {
 		 std::cout << "Czas gry: " << std::fixed << std::setprecision(0) << czas / 60 << "min " << (int)czas % 60 << "s" << std::endl;
 	 }
-	 std::cout << "Ilosc pionkow CZARNE: " << ilosc_czarnych << std::endl;
-	 std::cout << "Ilosc pionkow BIALE: " << ilosc_bialych << std::endl;
-	 if (zwyciezca == Pole::BIALE)
+	 std::cout << "Ilosc pionkow CZARNE: " << plansza->czarne << std::endl;
+	 std::cout << "Ilosc pionkow BIALE: " << plansza->biale << std::endl;
+	 if (plansza->czarne < plansza->biale)
 	 {
 		 std::cout << "Zwyciezca: BIALE !!!";
 	 }
-	 else if (zwyciezca == Pole::CZARNE)
+	 else if (plansza->czarne > plansza->biale)
 	 {
 		 std::cout << "Zwyciezca: CZARNE !!!";
 	 }
@@ -217,7 +217,7 @@
 	 delete gracz1;
 	 delete gracz2;
 
-	 dodaj_mecz(ilosc_czarnych, ilosc_bialych, czas, plansza->rozmiar_planszy, kto_gra);
+	 dodaj_mecz(plansza->czarne, plansza->biale, czas, plansza->rozmiar_planszy, kto_gra);
  }
 
  void intro() {
@@ -232,6 +232,8 @@
                                                                        
                                                                        
 )" << std::endl;
+
+	 std::cout << "Autor: Jakub Drozd\n\n" << std::endl;
 
 	 std::cout << "1. Nowa gra" << std::endl;
 	 std::cout << "2. Historia meczy" << std::endl;
