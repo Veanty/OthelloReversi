@@ -2,6 +2,8 @@
 
 Plansza::Plansza(int rozmiar_planszy) {
 	this->rozmiar_planszy = rozmiar_planszy;
+	this->czarne = 0;
+	this->biale = 0;
 
 	pola_planszy = new Pole * [rozmiar_planszy];
 	for (int i = 0; i < rozmiar_planszy; i++)
@@ -158,25 +160,21 @@ void Plansza::ruch(int rzad, int kolumna, Pole aktualny_gracz) {
 	}
 }
 
-Plansza::IlePionków Plansza::policz() {
-	IlePionków wszystkie_pionki = { 0, 0 };
+void Plansza::policz() {
 	for (int i = 0; i < rozmiar_planszy; i++)
 	{
 		for (int j = 0; j < rozmiar_planszy; j++)
 		{
 			if (pola_planszy[i][j] == Pole::BIALE)
 			{
-				wszystkie_pionki.ile_bialych++;
+				biale++;
 			}
 			else if (pola_planszy[i][j] == Pole::CZARNE)
 			{
-				wszystkie_pionki.ile_czarnych++;
+				czarne++;
 			}
 		}
 	}
-	ilosc_czarnych = wszystkie_pionki.ile_czarnych;
-	ilosc_bialych = wszystkie_pionki.ile_bialych;
-	return wszystkie_pionki;
 }
 
 int Plansza::czyMozliwyRuch(Pole aktualny_gracz) {
@@ -191,34 +189,4 @@ int Plansza::czyMozliwyRuch(Pole aktualny_gracz) {
 		}
 	}
 	return 0;
-}
-
-Pole Plansza::czyToKoniec(Pole aktualny_gracz) {
-	IlePionków wszystkie_pionki = policz();
-
-	if (wszystkie_pionki.ile_bialych == 0)
-	{
-		return Pole::CZARNE;
-	}
-	else if (wszystkie_pionki.ile_czarnych == 0)
-	{
-		return Pole::BIALE;
-	}
-	else if (czyMozliwyRuch(Pole::BIALE) == 0 && czyMozliwyRuch(Pole::CZARNE) == 0)
-	{
-		if (wszystkie_pionki.ile_bialych > wszystkie_pionki.ile_czarnych)
-		{
-			return Pole::BIALE;
-		}
-		else if (wszystkie_pionki.ile_czarnych > wszystkie_pionki.ile_bialych)
-		{
-			return Pole::CZARNE;
-		}
-		else
-		{
-			return Pole::PUSTE;
-		}
-	}
-
-	return{};
 }
