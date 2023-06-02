@@ -9,8 +9,6 @@
 #include "AIGracz.h"
 #include <string>
 
-extern int ilosc_czarnych;
-extern int ilosc_bialych;
 
 void dodaj_mecz(int liczba_czarnych, int liczba_bialych, double czas, int rozmiar_planszy, std::string kto_gra);
 
