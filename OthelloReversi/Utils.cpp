@@ -29,6 +29,7 @@
 }
 
  void odczytaj_mecze() {
+	 system("cls");
 	 FILE* plik = fopen("historia_meczy.txt", "r");
 	 if (plik != NULL)
 	 {
