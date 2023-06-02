@@ -3,7 +3,6 @@
 #define AIGRACZ_H
 
 #include "Gracz.h"
-#include "Ruch.h"
 
 class AIGracz : public Gracz {
 public:
