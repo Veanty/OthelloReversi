@@ -11,15 +11,15 @@ void CzlowiekGracz::zrob_ruch(Plansza& plansza) {
 		}
 		else
 		{
-			std::cout << "\n\t\tRuch gracza BIALE (O)\n";
+			std::cout << "\n\t\tRuch gracza BIALE (O)\n";			
 		}
 		std::cout << "\n\t\tPodaj rzad i kolumne: ";
 		std::cin >> rzad >> kolumna;
 		rzad--;
 		kolumna--;
-		if (plansza.sprawdzanie_ruchu(rzad, kolumna, kolor) == 1)
+		if (plansza.sprawdzanie_ruchu(rzad, kolumna, kolor) == 1)			
 		{
-			plansza.ruch(rzad, kolumna, kolor);
+			plansza.ruch(rzad, kolumna, kolor);	
 			break;
 		}
 		else
