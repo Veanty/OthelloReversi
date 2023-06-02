@@ -12,7 +12,7 @@ Plansza::Plansza(int rozmiar_planszy) {
 	}
 
 	for (int i = 0; i < rozmiar_planszy; i++)
-	{
+	{																	//Tworzenie planszy i ustawianie pionków w pozycjach startowych
 		for (int j = 0; j < rozmiar_planszy; j++)
 		{
 			pola_planszy[i][j] = Pole::PUSTE;
@@ -51,7 +51,7 @@ void Plansza::wypisz_plansze() {
 		{
 			std::cout << std::endl;
 		}
-		std::cout << std::setw(max_index_length) << i + 1 << "  ";
+		std::cout << std::setw(max_index_length) << i + 1 << "  ";						//Wypisywanie planszy w terminalu
 		for (int j = 0; j < rozmiar_planszy; j++)
 		{
 			char symbol = '.';
@@ -72,7 +72,7 @@ void Plansza::wypisz_plansze() {
 
 int Plansza::sprawdzanie_ruchu(int rzad, int kolumna, Pole aktualny_gracz) const{
 
-	int deltaRzad[] = { -1,-1,-1, 0, 0, 1, 1 ,1 };		//Możliwe do wykonania ruchy relatywnie do pola, np. -1 i -1 to lewe górne pole w relacji													do aktualnego pola
+	int deltaRzad[] = { -1,-1,-1, 0, 0, 1, 1 ,1 };		//Możliwe do wykonania ruchy relatywnie do pola, np. -1 i -1 to lewe górne pole w relacji															do aktualnego pola
 	int deltaKolumna[] = { -1, 0, 1,-1, 1,-1, 0, 1 };
 
 	Pole przeciwnik;
@@ -91,7 +91,7 @@ int Plansza::sprawdzanie_ruchu(int rzad, int kolumna, Pole aktualny_gracz) const
 		return 0;				//Sprawdzanie czy ruch nie jest wykonany poza planszą
 	}
 
-	for (int i = 0; i < 8; i++)			//8 mozliwych pol wokol konkretnej pozycji (chyba ze na krancu planszy)
+	for (int i = 0; i < 8; i++)			//Sprawdzanie każdego z kierunków w relacji do ruchu
 	{
 		int poprawny = 0;
 		int test_rzad = rzad + deltaRzad[i];
@@ -167,7 +167,7 @@ void Plansza::policz() {
 		{
 			if (pola_planszy[i][j] == Pole::BIALE)
 			{
-				biale++;
+				biale++;											//Liczenie ilosci pionkow na planszy
 			}
 			else if (pola_planszy[i][j] == Pole::CZARNE)
 			{
