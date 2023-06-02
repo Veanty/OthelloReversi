@@ -13,12 +13,12 @@ void AIGracz::zrob_ruch(Plansza& plansza) {
 
 	for (int rzad = 0; rzad < plansza.rozmiar_planszy; rzad++)
 	{
-		for (int kolumna = 0; kolumna < plansza.rozmiar_planszy; kolumna++)
+		for (int kolumna = 0; kolumna < plansza.rozmiar_planszy; kolumna++)					
 		{
 			if (plansza.sprawdzanie_ruchu(rzad, kolumna, kolor) == 1 && k < max_ruchy)
 			{
 				zapamietane_ruchy[k].rzad = rzad;
-				zapamietane_ruchy[k].kolumna = kolumna;
+				zapamietane_ruchy[k].kolumna = kolumna;				//Komputer zapamiętuje wszystkie możliwe ruchy do																								wykonania i losowo wybiera jeden z nich
 				k++;
 			}
 		}
@@ -26,7 +26,7 @@ void AIGracz::zrob_ruch(Plansza& plansza) {
 
 	if (k == 0)
 	{
-		std::cout << "Komputer: Brak dostępnych ruchow" << std::endl;
+		std::cout << "Komputer: Brak dostepnych ruchow" << std::endl;
 		return;
 	}
 
