@@ -8,20 +8,16 @@
 #include <string>
 #include "PoleRodzajGracza.h"
 
-extern int ilosc_bialych;
-extern int ilosc_czarnych;
 
 class Plansza {
-
-	struct IlePionków {
-		int ile_bialych;
-		int ile_czarnych;
-	};
 
 private:
 	Pole** pola_planszy;
 public:
 	
+	int biale;
+	int czarne;
+
 	int rozmiar_planszy;
 
 	Plansza(int rozmiar_planszy);
@@ -34,11 +30,9 @@ public:
 
 	void ruch(int rzad, int kolumna, Pole aktualny_gracz);
 
-	IlePionków policz();
+	void policz();
 
 	int czyMozliwyRuch(Pole aktualny_gracz);
-
-	Pole czyToKoniec(Pole aktualny_gracz);
 
 };
 
