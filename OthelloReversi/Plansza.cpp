@@ -37,7 +37,7 @@ Plansza::~Plansza() {
 void Plansza::wypisz_plansze() {
 	printf("\n\n");
 	int max_index_length = std::to_string(rozmiar_planszy).length();
-	/*system("cls");*/
+	system("cls");
 	std::cout << std::string(max_index_length + 2, ' ');
 	for (int i = 0; i < rozmiar_planszy; i++)
 	{
