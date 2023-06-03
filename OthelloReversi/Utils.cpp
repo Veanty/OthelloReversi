@@ -51,7 +51,7 @@
 			 else
 			 {
 				 printf("[Niepoprawny format log'a]\n");
-				 char ignoruj[300];
+				 char ignoruj[300];								//Aby odczytać reszte rekordow, pomijamy nastepne linie
 				 fgets(ignoruj, sizeof(ignoruj), plik);
 			 }
 		 }
@@ -68,7 +68,7 @@
 	 while ((c = getchar()) != '\n' && c != EOF) {}
  }
 
- void rozpocznij_gre() {
+ void rozpocznij_gre() {				//Iniclalizacja gry
 	 Plansza* plansza = nullptr;
 	 Gracz* gracz1;
 	 Gracz* gracz2;
@@ -175,7 +175,7 @@
 		 }
 		 
 
-		 if (!plansza->czyMozliwyRuch(aktualny_gracz->getKolor()))
+		 if (!plansza->czyMozliwyRuch(aktualny_gracz->getKolor()))				//Gra konczy sie w momencie, kiedy ktorys z graczy nie ma mozliwosci																				ruchu
 		 {
 			 plansza->policz();
 			 break;
@@ -239,11 +239,11 @@
 	 std::cout << "1. Nowa gra" << std::endl;
 	 std::cout << "2. Historia meczy" << std::endl;
 	 std::cout << "3. Wyjdz" << std::endl;
-	 char opcja;
+	 int opcja;
 	 std::cin >> opcja;
 	 wyczysc_bufor();
 
-	 if (opcja == '1')
+	 if (opcja == 1)
 	 {
 		 rozpocznij_gre();
 		 std::cout << "Nacisnij dowolny klawsiz, aby powrocic do menu glownego." << std::endl;
@@ -251,12 +251,12 @@
 		 system("cls");
 		 intro();
 	 }
-	 else if (opcja == '2')
+	 else if (opcja == 2)
 	 {
 		 odczytaj_mecze();
 		 intro();
 	 }
-	 else if (opcja == '3')
+	 else if (opcja == 3)
 	 {
 		 return;
 	 }
