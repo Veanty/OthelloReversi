@@ -1,1 +1,1 @@
-# OthelloReversi
+# OthelloReversi for UNI semester project
